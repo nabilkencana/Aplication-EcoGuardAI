@@ -106,7 +106,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   gradient: LinearGradient(
                     colors: [
                       AppConstants.primaryColor,
-                      AppConstants.secondaryColor,
+                      Color.fromARGB(255, 104, 175, 76),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
