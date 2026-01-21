@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'package:intl/intl.dart';
 
 class AIService {
   // Singleton instance
@@ -36,7 +35,6 @@ class AIService {
     await Future.delayed(const Duration(milliseconds: 300));
 
     final recommendations = <Map<String, dynamic>>[];
-    final random = Random();
 
     // Energy recommendations
     if (consumptionData['electricity'] > 2500) {
