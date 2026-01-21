@@ -11,7 +11,6 @@ android {
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
-        coreLibraryDesugaringEnabled = true  // ← ADD THIS LINE
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
@@ -29,7 +28,6 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-        multiDexEnabled = true  // ← ADD THIS LINE (required for desugaring)
     }
 
     buildTypes {
@@ -43,9 +41,4 @@ android {
 
 flutter {
     source = "../.."
-}
-
-dependencies {
-    // ← ADD THIS DEPENDENCIES SECTION at the bottom
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
 }
