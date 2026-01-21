@@ -30,7 +30,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   String greetingMessage = "Selamat Pagi";
 
   // State untuk data utama
-  double ecoScore = 100.0;
+  double ecoScore = 67.0;
   int activeAlerts = 3;
   double monthlySavings = 1850000;
 
@@ -480,7 +480,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     crossAxisCount: 2,
     crossAxisSpacing: 12,
     mainAxisSpacing: 12,
-    childAspectRatio: 1.2, // Ubah dari 1.2 menjadi 1.15
+    childAspectRatio: 1.15, // Ubah dari 1.2 menjadi 1.15
     children: [
       ConsumptionCard(
         title: '⚡ Listrik',
