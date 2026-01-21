@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.example.ecoguard_ai"
-    compileSdk = 34
+    compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -22,7 +22,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.ecoguard_ai"
-        minSdk = 21  // Hardcode minSdk ke 21
+        minSdk = flutter.minSdkVersion  // Hardcode minSdk ke 21
         targetSdk = 34
         versionCode = 1
         versionName = "1.0.0"
