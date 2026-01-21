@@ -1,3 +1,4 @@
+import 'package:ecoguard_ai/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -10,140 +11,801 @@ class MonitoringScreen extends StatefulWidget {
 
 class _MonitoringScreenState extends State<MonitoringScreen> {
   String _selectedTimeRange = 'Hari Ini';
-  final List<String> _timeRanges = [
-    'Hari Ini',
-    'Minggu Ini',
-    'Bulan Ini',
-    'Tahun Ini',
+  final List<Map<String, dynamic>> _timeRanges = [
+    {'label': 'Hari Ini', 'icon': Icons.today_rounded},
+    {'label': 'Minggu Ini', 'icon': Icons.calendar_view_week_rounded},
+    {'label': 'Bulan Ini', 'icon': Icons.calendar_month_rounded},
+    {'label': 'Tahun Ini', 'icon': Icons.calendar_today_rounded},
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Monitoring Real-Time')),
-      body: Column(
-        children: [
-          // Time Range Selector
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: _timeRanges.map((range) {
-                return Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2),
-                    child: ChoiceChip(
-                      label: Text(range),
-                      selected: _selectedTimeRange == range,
-                      onSelected: (selected) {
-                        setState(() => _selectedTimeRange = range);
-                      },
+      backgroundColor: const Color(0xFFF2F2F7),
+      body: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
+        slivers: [
+          // Modern AppBar
+          SliverAppBar(
+            automaticallyImplyLeading: false,
+            centerTitle: true,
+            expandedHeight: 120,
+            floating: false,
+            pinned: true,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            flexibleSpace: LayoutBuilder(
+              builder: (context, constraints) {
+                final top = constraints.biggest.height;
+                final isExpanded = top > 70;
+
+                return Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        AppConstants.primaryColor,
+                        AppConstants.secondaryColor.withOpacity(0.9),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(isExpanded ? 30 : 0),
+                      bottomRight: Radius.circular(isExpanded ? 30 : 0),
+                    ),
+                  ),
+                  child: SafeArea(
+                    bottom: false,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            'AI Insights',
+                            style: TextStyle(
+                              fontSize: isExpanded ? 28 : 22,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                              letterSpacing: -0.5,
+                            ),
+                          ),
+                          if (isExpanded) ...[
+                            const SizedBox(height: 8),
+                            Text(
+                              'Analisis cerdas untuk efisiensi optimal',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.white.withOpacity(0.9),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
                     ),
                   ),
                 );
-              }).toList(),
+              },
+            ),
+            actions: [
+              IconButton(
+                icon: Icon(Icons.refresh_rounded, color: Colors.white),
+                onPressed: _refreshData,
+              ),
+            ],
+          ),
+
+          // Time Range Selector
+          SliverToBoxAdapter(
+            child: Container(
+              margin: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 15,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Row(
+                    children: [
+                      Icon(Icons.timeline_rounded, color: Color(0xFF32D74B), size: 20),
+                      SizedBox(width: 8),
+                      Text(
+                        'Rentang Waktu',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: _timeRanges.map((range) {
+                      final isSelected = _selectedTimeRange == range['label'];
+                      return ChoiceChip.elevated(
+                        label: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(range['icon'] as IconData, size: 16, ),
+                            const SizedBox(width: 6),
+                            Text(range['label']),
+                          ],
+                        ),
+                        selected: isSelected,
+                        onSelected: (selected) {
+                          setState(() => _selectedTimeRange = range['label']);
+                        },
+                        selectedColor:  Colors.green[600],
+                        backgroundColor: Colors.grey[50],
+                        labelStyle: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: isSelected ? Colors.white : Colors.grey[700],
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        elevation: 0,
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ),
             ),
           ),
 
-          // Charts Section
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(16),
-              children: [
-                _buildEnergyChart(),
-                const SizedBox(height: 24),
-                _buildWaterChart(),
-                const SizedBox(height: 24),
-                _buildComparisonTable(),
-              ],
+          // Statistics Overview
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: GridView.count(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisCount: 2,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+                childAspectRatio: 1.4,
+                children: [
+                  _buildStatCard(
+                    '⚡ Listrik Hari Ini',
+                    '2,850 kWh',
+                    '-8.5%',
+                    Colors.green,
+                    Icons.bolt_rounded,
+                    const Color(0xFFFFD60A),
+                  ),
+                  _buildStatCard(
+                    '💧 Air Minggu Ini',
+                    '27,200 L',
+                    '-12.3%',
+                    Colors.green,
+                    Icons.water_drop_rounded,
+                    const Color(0xFF007AFF),
+                  ),
+                  _buildStatCard(
+                    '🌡️ Suhu Rata-rata',
+                    '24.5°C',
+                    'Optimal',
+                    Colors.green,
+                    Icons.thermostat_rounded,
+                    const Color(0xFFFF3B30),
+                  ),
+                  _buildStatCard(
+                    '🌿 Emisi CO₂',
+                    '45 kg',
+                    '-15%',
+                    Colors.green,
+                    Icons.eco_rounded,
+                    const Color(0xFF32D74B),
+                  ),
+                ],
+              ),
             ),
           ),
+
+          // Energy Consumption Chart
+          SliverToBoxAdapter(
+            child: Container(
+              margin: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 15,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFFD60A).withOpacity(0.12),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Icon(Icons.bolt_rounded, color: Color(0xFFFFD60A), size: 24),
+                        ),
+                        const SizedBox(width: 12),
+                        const Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Konsumsi Listrik',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                              SizedBox(height: 2),
+                              Text(
+                                'Pola harian dalam kWh',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Color(0xFF8E8E93),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: Colors.green.withOpacity(0.12),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.trending_down_rounded, size: 14, color: Colors.green),
+                              SizedBox(width: 4),
+                              Text(
+                                '-8.5%',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.green,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      height: 220,
+                      child: SfCartesianChart(
+                        plotAreaBorderWidth: 0,
+                        margin: EdgeInsets.zero,
+                        primaryXAxis: const CategoryAxis(
+                          majorGridLines: MajorGridLines(width: 0),
+                          labelStyle: TextStyle(fontSize: 11, color: Color(0xFF8E8E93)),
+                        ),
+                        primaryYAxis: NumericAxis(
+                          axisLine: const AxisLine(width: 0),
+                          majorGridLines: const MajorGridLines(
+                            width: 1,
+                            color: Color(0xFFF2F2F7),
+                          ),
+                          labelStyle: const TextStyle(fontSize: 11, color: Color(0xFF8E8E93)),
+                        ),
+                        series: <CartesianSeries>[
+                          AreaSeries<ChartData, String>(
+                            dataSource: _getEnergyData(),
+                            xValueMapper: (ChartData data, _) => data.time,
+                            yValueMapper: (ChartData data, _) => data.consumption,
+                            gradient: LinearGradient(
+                              colors: [
+                                const Color(0xFFFFD60A).withOpacity(0.3),
+                                const Color(0xFFFFD60A).withOpacity(0.05),
+                              ],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            ),
+                            borderWidth: 2,
+                            borderColor: const Color(0xFFFFD60A),
+                            dataLabelSettings: const DataLabelSettings(
+                              isVisible: true,
+                              textStyle: TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                        ],
+                        tooltipBehavior: TooltipBehavior(
+                          enable: true,
+                          color: Colors.white,
+                          borderColor: const Color(0xFFFFD60A),
+                          borderWidth: 1,
+                          textStyle: const TextStyle(color: Colors.black87),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    const Divider(height: 1, color: Color(0xFFF2F2F7)),
+                    const SizedBox(height: 16),
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Total Konsumsi',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Color(0xFF8E8E93),
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              '2,850 kWh',
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              'Puncak Hari Ini',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Color(0xFF8E8E93),
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Row(
+                              children: [
+                                Icon(Icons.bolt_rounded, size: 16, color: Color(0xFFFF3B30)),
+                                SizedBox(width: 4),
+                                Text(
+                                  '410 kW',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w700,
+                                    color: Color(0xFFFF3B30),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
+          // Water Consumption Chart
+          SliverToBoxAdapter(
+            child: Container(
+              margin: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 15,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF007AFF).withOpacity(0.12),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Icon(Icons.water_drop_rounded, color: Color(0xFF007AFF), size: 24),
+                        ),
+                        const SizedBox(width: 12),
+                        const Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Konsumsi Air',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                              SizedBox(height: 2),
+                              Text(
+                                'Pola mingguan dalam liter',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Color(0xFF8E8E93),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: Colors.green.withOpacity(0.12),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.trending_down_rounded, size: 14, color: Colors.green),
+                              SizedBox(width: 4),
+                              Text(
+                                '-12.3%',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.green,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      height: 220,
+                      child: SfCartesianChart(
+                        plotAreaBorderWidth: 0,
+                        margin: EdgeInsets.zero,
+                        primaryXAxis: const CategoryAxis(
+                          majorGridLines: MajorGridLines(width: 0),
+                          labelStyle: TextStyle(fontSize: 11, color: Color(0xFF8E8E93)),
+                        ),
+                        primaryYAxis: NumericAxis(
+                          axisLine: const AxisLine(width: 0),
+                          majorGridLines: const MajorGridLines(
+                            width: 1,
+                            color: Color(0xFFF2F2F7),
+                          ),
+                          labelStyle: const TextStyle(fontSize: 11, color: Color(0xFF8E8E93)),
+                        ),
+                        series: <CartesianSeries>[
+                          ColumnSeries<ChartData, String>(
+                            dataSource: _getWaterData(),
+                            xValueMapper: (ChartData data, _) => data.time,
+                            yValueMapper: (ChartData data, _) => data.consumption,
+                            color: const Color(0xFF007AFF),
+                            borderRadius: BorderRadius.circular(4),
+                            dataLabelSettings: const DataLabelSettings(
+                              isVisible: true,
+                              textStyle: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Colors.white),
+                            ),
+                          ),
+                        ],
+                        tooltipBehavior: TooltipBehavior(
+                          enable: true,
+                          color: Colors.white,
+                          borderColor: const Color(0xFF007AFF),
+                          borderWidth: 1,
+                          textStyle: const TextStyle(color: Colors.black87),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    const Divider(height: 1, color: Color(0xFFF2F2F7)),
+                    const SizedBox(height: 16),
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Total Konsumsi',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Color(0xFF8E8E93),
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              '27,200 L',
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              'Penggunaan Terendah',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Color(0xFF8E8E93),
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Row(
+                              children: [
+                                Icon(Icons.water_drop_rounded, size: 16, color: Color(0xFF34C759)),
+                                SizedBox(width: 4),
+                                Text(
+                                  '3,200 L',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w700,
+                                    color: Color(0xFF34C759),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
+          // Comparison Table
+          SliverToBoxAdapter(
+            child: Container(
+              margin: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 15,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Row(
+                      children: [
+                        Icon(Icons.bar_chart_rounded, color: Color(0xFF5856D6), size: 20),
+                        SizedBox(width: 8),
+                        Text(
+                          'Perbandingan dengan Standar',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: const Color(0xFFF2F2F7), width: 1),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Table(
+                          columnWidths: const {
+                            0: FlexColumnWidth(2.5),
+                            1: FlexColumnWidth(1.5),
+                            2: FlexColumnWidth(1.5),
+                            3: FlexColumnWidth(1.5),
+                          },
+                          children: [
+                            TableRow(
+                              decoration: const BoxDecoration(
+                                color: Color(0xFFF2F2F7),
+                              ),
+                              children: [
+                                _buildTableHeader('Parameter'),
+                                _buildTableHeader('Anda'),
+                                _buildTableHeader('Standar'),
+                                _buildTableHeader('Status'),
+                              ],
+                            ),
+                            _buildTableRow(
+                              'Listrik/kapita',
+                              '2.8 kWh',
+                              '3.5 kWh',
+                              const Color(0xFF34C759),
+                              Icons.check_circle_rounded,
+                            ),
+                            _buildTableRow(
+                              'Air/kapita',
+                              '120 L',
+                              '159 L',
+                              
+                              const Color(0xFF32D74B),
+                              Icons.star_rounded,
+                            ),
+                            _buildTableRow(
+                              'Emisi CO₂',
+                              '45 kg',
+                              '60 kg',
+                              
+                              const Color(0xFF34C759),
+                              Icons.check_circle_rounded,
+                            ),
+                            _buildTableRow(
+                              'Puncak Listrik',
+                              '410 kW',
+                              '350 kW',
+                              
+                              const Color(0xFFFF9500),
+                              Icons.warning_rounded,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF2F2F7),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Row(
+                        children: [
+                          Icon(Icons.info_outline_rounded, color: Color(0xFF8E8E93), size: 20),
+                          SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              'Rata-rata performa Anda 15% lebih baik dari standar industri',
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: Color(0xFF8E8E93),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
+          const SliverToBoxAdapter(child: SizedBox(height: 40)),
         ],
       ),
     );
   }
 
-  Widget _buildEnergyChart() {
-    return Card(
+  Widget _buildStatCard(
+    String title,
+    String value,
+    String change,
+    Color changeColor,
+    IconData icon,
+    Color iconColor,
+  ) {
+    final isPositive = change.contains('-') || change.toLowerCase().contains('optimal');
+
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Row(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Icon(Icons.bolt, color: Colors.amber),
-                SizedBox(width: 8),
-                Text(
-                  'Konsumsi Listrik',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: iconColor.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(icon, color: iconColor, size: 20),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: isPositive ? Colors.green.withOpacity(0.12) : Colors.red.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        isPositive ? Icons.trending_down_rounded : Icons.trending_up_rounded,
+                        size: 12,
+                        color: isPositive ? Colors.green : Colors.red,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        change,
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w700,
+                          color: isPositive ? Colors.green : Colors.red,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
-            const SizedBox(height: 16),
-            SizedBox(
-              height: 200,
-              child: SfCartesianChart(
-                primaryXAxis: const CategoryAxis(),
-                series: <LineSeries<ChartData, String>>[
-                  LineSeries<ChartData, String>(
-                    dataSource: [
-                      ChartData('00:00', 120),
-                      ChartData('04:00', 90),
-                      ChartData('08:00', 280),
-                      ChartData('12:00', 320),
-                      ChartData('16:00', 410),
-                      ChartData('20:00', 350),
-                      ChartData('24:00', 180),
-                    ],
-                    xValueMapper: (ChartData data, _) => data.time,
-                    yValueMapper: (ChartData data, _) => data.consumption,
-                    dataLabelSettings: const DataLabelSettings(isVisible: true),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            const SizedBox(height: 12),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Total Hari Ini',
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                    Text(
-                      '2,850 kWh',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey[600],
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text('vs Kemarin', style: TextStyle(color: Colors.grey)),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.arrow_downward,
-                          color: Colors.green,
-                          size: 16,
-                        ),
-                        SizedBox(width: 4),
-                        Text(
-                          '-8.5%',
-                          style: TextStyle(
-                            color: Colors.green,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                const SizedBox(height: 4),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.black87,
+                    letterSpacing: -0.5,
+                  ),
                 ),
               ],
             ),
@@ -153,173 +815,15 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
     );
   }
 
-  Widget _buildWaterChart() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Row(
-              children: [
-                Icon(Icons.water_drop, color: Colors.blue),
-                SizedBox(width: 8),
-                Text(
-                  'Konsumsi Air',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            SizedBox(
-              height: 200,
-              child: SfCartesianChart(
-                primaryXAxis: const CategoryAxis(),
-                series: <ColumnSeries<ChartData, String>>[
-                  ColumnSeries<ChartData, String>(
-                    dataSource: [
-                      ChartData('Sen', 4500),
-                      ChartData('Sel', 4200),
-                      ChartData('Rab', 3900),
-                      ChartData('Kam', 4100),
-                      ChartData('Jum', 3800),
-                      ChartData('Sab', 3500),
-                      ChartData('Min', 3200),
-                    ],
-                    xValueMapper: (ChartData data, _) => data.time,
-                    yValueMapper: (ChartData data, _) => data.consumption,
-                    dataLabelSettings: const DataLabelSettings(isVisible: true),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Total Minggu Ini',
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                    Text(
-                      '27,200 L',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      'vs Minggu Lalu',
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.arrow_downward,
-                          color: Colors.green,
-                          size: 16,
-                        ),
-                        SizedBox(width: 4),
-                        Text(
-                          '-12.3%',
-                          style: TextStyle(
-                            color: Colors.green,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildComparisonTable() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Perbandingan dengan Standar',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            Table(
-              columnWidths: const {
-                0: FlexColumnWidth(3),
-                1: FlexColumnWidth(2),
-                2: FlexColumnWidth(2),
-                3: FlexColumnWidth(2),
-              },
-              border: TableBorder.all(color: Colors.grey[300]!),
-              children: [
-                TableRow(
-                  decoration: BoxDecoration(color: Colors.grey[100]),
-                  children: const [
-                    Padding(
-                      padding: EdgeInsets.all(8),
-                      child: Text('Parameter', style: TextStyle(fontWeight: FontWeight.bold)),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(8),
-                      child: Text('Anda', style: TextStyle(fontWeight: FontWeight.bold)),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(8),
-                      child: Text('Standar', style: TextStyle(fontWeight: FontWeight.bold)),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(8),
-                      child: Text('Status', style: TextStyle(fontWeight: FontWeight.bold)),
-                    ),
-                  ],
-                ),
-                _buildTableRow(
-                  'Listrik/kapita',
-                  '2.8 kWh',
-                  '3.5 kWh',
-                  'Baik',
-                  Colors.green,
-                ),
-                _buildTableRow(
-                  'Air/kapita',
-                  '120 L',
-                  '150 L',
-                  'Sangat Baik',
-                  Colors.green,
-                ),
-                _buildTableRow(
-                  'Emisi CO₂',
-                  '45 kg',
-                  '60 kg',
-                  'Baik',
-                  Colors.green,
-                ),
-                _buildTableRow(
-                  'Puncak Listrik',
-                  '410 kW',
-                  '350 kW',
-                  'Perlu Perbaikan',
-                  Colors.orange,
-                ),
-              ],
-            ),
-          ],
+  Widget _buildTableHeader(String text) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Text(
+        text,
+        style: const TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w700,
+          color: Color(0xFF8E8E93),
         ),
       ),
     );
@@ -329,26 +833,123 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
     String param,
     String value,
     String standard,
-    String status,
-    Color color,
+    Color statusColor,
+    IconData statusIcon,
   ) {
     return TableRow(
+      decoration: const BoxDecoration(
+        border: Border.symmetric(
+          horizontal: BorderSide(color: Color(0xFFF2F2F7), width: 1),
+        ),
+      ),
       children: [
-        Padding(padding: const EdgeInsets.all(8), child: Text(param)),
-        Padding(padding: const EdgeInsets.all(8), child: Text(value)),
-        Padding(padding: const EdgeInsets.all(8), child: Text(standard)),
         Padding(
-          padding: const EdgeInsets.all(8),
-          child: Chip(
-            label: Text(
-              status,
-              style: const TextStyle(color: Colors.white, fontSize: 12),
+          padding: const EdgeInsets.all(16),
+          child: Text(
+            param,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: Colors.black87,
             ),
-            backgroundColor: color,
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Text(
+            value,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              color: Colors.black87,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Text(
+            standard,
+            style: const TextStyle(
+              fontSize: 14,
+              color: Color(0xFF8E8E93),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: statusColor.withOpacity(0.12),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(statusIcon, size: 14, color: statusColor),
+                const SizedBox(width: 6),
+                Text(
+                  statusIcon == Icons.check_circle_rounded
+                      ? 'Baik'
+                      : statusIcon == Icons.warning_rounded
+                          ? 'Perhatian'
+                          : 'Unggul',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: statusColor,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ],
+    );
+  }
+
+  List<ChartData> _getEnergyData() {
+    return [
+      ChartData('00:00', 120),
+      ChartData('04:00', 90),
+      ChartData('08:00', 280),
+      ChartData('12:00', 320),
+      ChartData('16:00', 410),
+      ChartData('20:00', 350),
+      ChartData('24:00', 180),
+    ];
+  }
+
+  List<ChartData> _getWaterData() {
+    return [
+      ChartData('Sen', 4500),
+      ChartData('Sel', 4200),
+      ChartData('Rab', 3900),
+      ChartData('Kam', 4100),
+      ChartData('Jum', 3800),
+      ChartData('Sab', 3500),
+      ChartData('Min', 3200),
+    ];
+  }
+
+  void _refreshData() {
+    // Simulasi refresh data
+    setState(() {});
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Row(
+          children: [
+            Icon(Icons.refresh_rounded, color: Colors.white),
+            SizedBox(width: 8),
+            Text('Data monitoring diperbarui'),
+          ],
+        ),
+        backgroundColor: Colors.green[600],
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
     );
   }
 }
