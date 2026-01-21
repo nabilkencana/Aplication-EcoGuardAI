@@ -3,6 +3,7 @@ import 'package:ecoguard_ai/screens/csr_report_screen.dart';
 import 'package:ecoguard_ai/screens/eco_score_screen.dart';
 import 'package:ecoguard_ai/screens/insights_screen.dart';
 import 'package:ecoguard_ai/screens/monitoring_screen.dart';
+import 'package:ecoguard_ai/widgets/navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:ecoguard_ai/models/energy_data.dart';
 import 'package:ecoguard_ai/models/water_data.dart';
@@ -128,7 +129,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     const SizedBox(width: 12),
                                     Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           'EcoGuard AI',
@@ -267,7 +268,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: _buildBottomNavBar(),
+      // HAPUS: bottomNavigationBar: Navbar(currentIndex: currentIndex, ontap: _tap),
     );
   }
 
@@ -449,12 +450,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildStatMiniCard(
-    String title,
-    String value,
-    IconData icon,
-    Color color,
-    String subtitle,
-  ) {
+      String title,
+      String value,
+      IconData icon,
+      Color color,
+      String subtitle,
+      ) {
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -589,11 +590,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildActionButton(
-    IconData icon,
-    String label,
-    Color color,
-    VoidCallback onTap,
-  ) {
+      IconData icon,
+      String label,
+      Color color,
+      VoidCallback onTap,
+      ) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
@@ -629,7 +630,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return AiRecommendationCard(
       recommendation: recommendation,
       impact:
-          'Potensi penghematan: Rp ${(energyData.currentConsumption * 1500 * 0.2).toStringAsFixed(0)}/bulan',
+      'Potensi penghematan: Rp ${(energyData.currentConsumption * 1500 * 0.2).toStringAsFixed(0)}/bulan',
       priority: 'Tinggi',
       onTap: () => _goToInsights(),
     );
@@ -721,93 +722,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
         ),
       ],
-    );
-  }
-
-  BottomNavigationBar _buildBottomNavBar() {
-    return BottomNavigationBar(
-      currentIndex: 0,
-      type: BottomNavigationBarType.fixed,
-      backgroundColor: Colors.white,
-      selectedItemColor: AppConstants.primaryColor,
-      unselectedItemColor: Colors.grey,
-      selectedLabelStyle: const TextStyle(fontSize: 11),
-      unselectedLabelStyle: const TextStyle(fontSize: 11),
-      elevation: 4,
-      items: [
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.dashboard_outlined),
-          activeIcon: Icon(Icons.dashboard),
-          label: 'Dashboard',
-        ),
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.insights_outlined),
-          activeIcon: Icon(Icons.insights),
-          label: 'Insights',
-        ),
-        BottomNavigationBarItem(
-          icon: Stack(
-            children: [
-              const Icon(Icons.notifications_outlined),
-              if (activeAlerts > 0)
-                Positioned(
-                  right: 0,
-                  top: 0,
-                  child: Container(
-                    width: 8,
-                    height: 8,
-                    decoration: const BoxDecoration(
-                      color: Colors.red,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                ),
-            ],
-          ),
-          activeIcon: Stack(
-            children: [
-              const Icon(Icons.notifications),
-              if (activeAlerts > 0)
-                Positioned(
-                  right: 0,
-                  top: 0,
-                  child: Container(
-                    width: 8,
-                    height: 8,
-                    decoration: const BoxDecoration(
-                      color: Colors.red,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                ),
-            ],
-          ),
-          label: 'Alerts',
-        ),
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.bar_chart_outlined),
-          activeIcon: Icon(Icons.bar_chart),
-          label: 'Monitoring',
-        ),
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.person_outline),
-          activeIcon: Icon(Icons.person),
-          label: 'Profil',
-        ),
-      ],
-      onTap: (index) {
-        switch (index) {
-          case 1:
-            _goToInsights();
-            break;
-          case 2:
-            _goToAlerts();
-            break;
-          case 3:
-            _goToMonitoring();
-            break;
-        }
-      },
     );
   }
 
