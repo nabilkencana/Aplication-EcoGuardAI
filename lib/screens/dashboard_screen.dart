@@ -489,7 +489,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       childAspectRatio: 0.9, // Sesuaikan rasio aspek
       children: [
         ConstrainedBox(
-          constraints: BoxConstraints(maxHeight: 180),
+          constraints: BoxConstraints(maxHeight: 160), // Reduced height
           child: ConsumptionCard(
             title: '⚡ Listrik',
             value: '${energyData.currentConsumption.toStringAsFixed(0)} kWh',
@@ -501,7 +501,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
 
         ConstrainedBox(
-          constraints: BoxConstraints(maxHeight: 200),
+          constraints: BoxConstraints(maxHeight: 160), // Reduced height
           child: ConsumptionCard(
             title: '💧 Air',
             value: '${waterData.currentConsumption.toStringAsFixed(0)} m³',
