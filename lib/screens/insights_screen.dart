@@ -1,3 +1,4 @@
+import 'package:ecoguard_ai/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class InsightsScreen extends StatefulWidget {
@@ -15,8 +16,10 @@ class _InsightsScreenState extends State<InsightsScreen> {
       'impact': 'Potensi penghematan: Rp 450.000/bulan',
       'recommendation': 'Jadwalkan perangkat non-esensial di luar jam puncak',
       'priority': 'Tinggi',
-      'icon': Icons.bolt,
-      'color': Colors.amber,
+      'icon': Icons.bolt_rounded,
+      'color': Color(0xFFFF9500),
+      'trend': Icons.trending_up_rounded,
+      'date': 'Hari ini • 10:30',
     },
     {
       'title': '💧 Kebocoran Air Terdeteksi',
@@ -24,8 +27,10 @@ class _InsightsScreenState extends State<InsightsScreen> {
       'impact': 'Kerugian air: ~500 L/hari',
       'recommendation': 'Periksa instalasi pipa dan keran',
       'priority': 'Kritis',
-      'icon': Icons.water_damage,
-      'color': Colors.blue,
+      'icon': Icons.water_damage_rounded,
+      'color': Color(0xFF007AFF),
+      'trend': Icons.warning_rounded,
+      'date': 'Kemarin • 15:45',
     },
     {
       'title': '🌿 Emisi Berlebih',
@@ -33,114 +38,332 @@ class _InsightsScreenState extends State<InsightsScreen> {
       'impact': 'Setara dengan 8 pohon dewasa',
       'recommendation': 'Optimalkan penggunaan AC dan lampu',
       'priority': 'Sedang',
-      'icon': Icons.cloud,
-      'color': Colors.green,
+      'icon': Icons.eco_rounded,
+      'color': Color(0xFF34C759),
+      'trend': Icons.trending_up_rounded,
+      'date': '2 hari lalu • 09:20',
+    },
+    {
+      'title': '🌡️ AC Berjalan Optimal',
+      'description': 'Suhu AC diatur otomatis sesuai jam operasional',
+      'impact': 'Penghematan: Rp 120.000/bulan',
+      'recommendation': 'Pertahankan pengaturan saat ini',
+      'priority': 'Rendah',
+      'icon': Icons.ac_unit_rounded,
+      'color': Color(0xFFAF52DE),
+      'trend': Icons.trending_down_rounded,
+      'date': 'Minggu lalu • 14:10',
     },
   ];
+
+  String _selectedFilter = 'Semua';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('AI Insights'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () => _refreshInsights(),
-          ),
-        ],
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          // AI Insight Header
-          Card(
-            color: Colors.blue[50],
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  const Row(
-                    children: [
-                      Icon(Icons.psychology, color: Colors.blue),
-                      SizedBox(width: 8),
-                      Text(
-                        'EcoGuard AI Menganalisis',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue,
+      backgroundColor: Color(0xFFF2F2F7),
+      body: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
+        slivers: [
+          // AppBar Modern
+          SliverAppBar(
+            expandedHeight: 100,
+            floating: true,
+            pinned: true,
+            backgroundColor: Colors.white,
+            elevation: 0,
+            surfaceTintColor: Colors.transparent,
+            flexibleSpace: FlexibleSpaceBar(
+              collapseMode: CollapseMode.pin,
+              background: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      AppConstants.primaryColor,
+                      AppConstants.secondaryColor,
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+                child: SafeArea(
+                  bottom: false,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            IconButton(
+                              icon: Icon(Icons.arrow_back_rounded, color: Colors.white),
+                              onPressed: () => Navigator.pop(context),
+                            ),
+                            Text(
+                              'AI Insights',
+                              style: TextStyle(
+                                fontSize: 28,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.white,
+                                letterSpacing: -0.5,
+                              ),
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.refresh_rounded, color: Colors.white),
+                              onPressed: _refreshInsights,
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 8),
+                        Center(
+                          child: Text(
+                            'Analisis cerdas untuk efisiensi optimal',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.white.withOpacity(0.9),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 12),
-                  const Text(
-                    'AI menganalisis pola penggunaan Anda dan memberikan rekomendasi cerdas untuk meningkatkan efisiensi',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.grey),
+                ),
+              ),
+            ),
+          ),
+
+          // AI Intelligence Header
+          SliverToBoxAdapter(
+            child: Container(
+              margin: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    AppConstants.primaryColor,
+                    AppConstants.secondaryColor.withOpacity(0.9),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.green.withOpacity(0.2),
+                    blurRadius: 20,
+                    offset: const Offset(0, 10),
                   ),
-                  const SizedBox(height: 16),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: [
-                      Chip(
-                        label: const Text('Machine Learning'),
-                        backgroundColor: Colors.blue[100],
-                      ),
-                      Chip(
-                        label: const Text('Pattern Recognition'),
-                        backgroundColor: Colors.green[100],
-                      ),
-                      Chip(
-                        label: const Text('Predictive Analytics'),
-                        backgroundColor: Colors.amber[100],
-                      ),
-                    ],
+                ],
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 60,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Icon(Icons.psychology_rounded, color: Colors.white, size: 32),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'EcoGuard AI sedang bekerja',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          'Menganalisis pola konsumsi dan memberikan rekomendasi cerdas untuk efisiensi optimal',
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.white.withOpacity(0.9),
+                            height: 1.4,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
           ),
-          const SizedBox(height: 24),
 
-          // Insights List
-          const Text(
-            'Insights Terbaru',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
+          // Filter Chips
+          SliverToBoxAdapter(
+            child: Container(
+              height: 60,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  _buildFilterChip('Semua', Icons.all_inclusive_rounded),
+                  const SizedBox(width: 8),
+                  _buildFilterChip('Kritis', Icons.warning_rounded),
+                  const SizedBox(width: 8),
+                  _buildFilterChip('Tinggi', Icons.priority_high_rounded),
+                  const SizedBox(width: 8),
+                  _buildFilterChip('Sedang', Icons.timeline_rounded),
+                  const SizedBox(width: 8),
+                  _buildFilterChip('Rendah', Icons.low_priority_rounded),
+                ],
+              ),
             ),
           ),
-          const SizedBox(height: 16),
-          ..._aiInsights.map((insight) => _buildInsightCard(insight)),
-          const SizedBox(height: 24),
 
-          // Predictive Analysis
-          _buildPredictiveAnalysis(),
+          // Stats Overview
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: GridView.count(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisCount: 2,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+                childAspectRatio: 1.6,
+                children: [
+                  _buildStatCard(
+                    'Total Insights',
+                    '${_aiInsights.length}',
+                    Icons.insights_rounded,
+                    Color(0xFF007AFF),
+                  ),
+                  _buildStatCard(
+                    'Potensi Hemat',
+                    'Rp 570K',
+                    Icons.savings_rounded,
+                    Color(0xFF34C759),
+                  ),
+                  _buildStatCard(
+                    'CO₂ Berkurang',
+                    '150 kg',
+                    Icons.co2_rounded,
+                    Color(0xFF32D74B),
+                  ),
+                  _buildStatCard(
+                    'Insights Aktif',
+                    '3',
+                    Icons.notifications_active_rounded,
+                    Color(0xFFFF9500),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // Section Header
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 24, 16, 12),
+              child: Row(
+                children: [
+                  Text(
+                    'Insights Terbaru',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.black,
+                      letterSpacing: -0.3,
+                    ),
+                  ),
+                  const Spacer(),
+                  Text(
+                    '${_aiInsights.length} ditemukan',
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // Insights List
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                final insight = _aiInsights[index];
+                return _buildInsightCard(insight);
+              },
+              childCount: _aiInsights.length,
+            ),
+          ),
+
+          // Predictive Analysis Section
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 24, 16, 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Analisis Prediktif',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.black,
+                      letterSpacing: -0.3,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Prediksi berdasarkan pola historis dan tren terkini',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildPredictiveAnalysis(),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 
   Widget _buildInsightCard(Map<String, dynamic> insight) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 16),
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Header Row
             Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(8),
+                  width: 48,
+                  height: 48,
                   decoration: BoxDecoration(
-                    color: insight['color'].withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
+                    color: insight['color'].withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(14),
                   ),
-                  child: Icon(insight['icon'], color: insight['color']),
+                  child: Icon(insight['icon'], color: insight['color'], size: 26),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -150,62 +373,188 @@ class _InsightsScreenState extends State<InsightsScreen> {
                       Text(
                         insight['title'],
                         style: const TextStyle(
-                          fontWeight: FontWeight.bold,
                           fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black87,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: 2),
                       Text(
-                        insight['description'],
-                        style: TextStyle(color: Colors.grey[600]),
+                        insight['date'],
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey[600],
+                        ),
                       ),
                     ],
                   ),
                 ),
-                Chip(
-                  label: Text(insight['priority']),
-                  backgroundColor: _getPriorityColor(insight['priority']),
-                  labelStyle: const TextStyle(color: Colors.white, fontSize: 12),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: _getPriorityColor(insight['priority']).withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        insight['trend'],
+                        size: 14,
+                        color: _getPriorityColor(insight['priority']),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        insight['priority'],
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: _getPriorityColor(insight['priority']),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
+
             const SizedBox(height: 16),
+
+            // Description
+            Text(
+              insight['description'],
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey[700],
+                height: 1.5,
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            // Impact Card
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.grey[50],
-                borderRadius: BorderRadius.circular(8),
+                color: Color(0xFFF2F2F7),
+                borderRadius: BorderRadius.circular(16),
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.savings, size: 20, color: Colors.green),
-                  const SizedBox(width: 8),
-                  Expanded(child: Text(insight['impact'])),
+                  Icon(
+                    Icons.savings_rounded,
+                    color: Color(0xFF34C759),
+                    size: 20,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      insight['impact'],
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey[800],
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
-            const SizedBox(height: 12),
-            Text(
-              'Rekomendasi: ${insight['recommendation']}',
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                color: Theme.of(context).primaryColor,
+
+            const SizedBox(height: 16),
+
+            // Recommendation
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Color(0xFF007AFF).withOpacity(0.05),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: Color(0xFF007AFF).withOpacity(0.1),
+                  width: 1,
+                ),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.lightbulb_rounded,
+                    color: Color(0xFF007AFF),
+                    size: 20,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Rekomendasi AI',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Color(0xFF007AFF),
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          insight['recommendation'],
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.grey[800],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
+
             const SizedBox(height: 16),
+
+            // Action Buttons
             Row(
               children: [
                 Expanded(
                   child: OutlinedButton(
                     onPressed: () {},
-                    child: const Text('Tandai Selesai'),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      side: BorderSide(color: Colors.grey[300]!),
+                    ),
+                    child: Text(
+                      'Tandai Selesai',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey[700],
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {},
-                    child: const Text('Terapkan'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF007AFF),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      elevation: 0,
+                    ),
+                    child: Text(
+                      'Terapkan',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -217,62 +566,90 @@ class _InsightsScreenState extends State<InsightsScreen> {
   }
 
   Widget _buildPredictiveAnalysis() {
-    return Card(
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Row(
+            Row(
               children: [
-                Icon(Icons.trending_up, color: Colors.purple),
-                SizedBox(width: 8),
-                Text(
-                  'Analisis Prediktif',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: Color(0xFF5856D6).withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Icon(Icons.trending_up_rounded, color: Color(0xFF5856D6), size: 26),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Prediksi Bulan Depan',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        'Berdasarkan pola historis',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 16),
-            const Text(
-              'Berdasarkan pola penggunaan, AI memprediksi:',
-              style: TextStyle(color: Colors.grey),
-            ),
-            const SizedBox(height: 16),
-            DataTable(
-              columns: const [
-                DataColumn(label: Text('Parameter')),
-                DataColumn(label: Text('Prediksi')),
-                DataColumn(label: Text('Rekomendasi')),
-              ],
-              rows: [
-                DataRow(cells: [
-                  const DataCell(Text('Bulan Depan')),
-                  DataCell(Text(
-                    '↑ 15%',
-                    style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-                  )),
-                  const DataCell(Text('Optimalkan AC')),
-                ]),
-                DataRow(cells: [
-                  const DataCell(Text('Biaya Listrik')),
-                  DataCell(Text(
-                    'Rp 3.2M',
-                    style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-                  )),
-                  const DataCell(Text('Implementasi Solar Panel')),
-                ]),
-                DataRow(cells: [
-                  const DataCell(Text('Emisi CO₂')),
-                  DataCell(Text(
-                    '↓ 8%',
-                    style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
-                  )),
-                  const DataCell(Text('Pertahankan pola hemat')),
-                ]),
+            Column(
+              children: [
+                _buildPredictionRow(
+                  'Konsumsi Listrik',
+                  '↑ 15%',
+                  Colors.red,
+                  Icons.bolt_rounded,
+                ),
+                const SizedBox(height: 12),
+                _buildPredictionRow(
+                  'Biaya Energi',
+                  'Rp 3.2M',
+                  Colors.orange,
+                  Icons.attach_money_rounded,
+                ),
+                const SizedBox(height: 12),
+                _buildPredictionRow(
+                  'Emisi CO₂',
+                  '↓ 8%',
+                  Colors.green,
+                  Icons.co2_rounded,
+                ),
+                const SizedBox(height: 12),
+                _buildPredictionRow(
+                  'Eco Score',
+                  '↑ 5 poin',
+                  Color(0xFF34C759),
+                  Icons.leaderboard_rounded,
+                ),
               ],
             ),
           ],
@@ -281,16 +658,146 @@ class _InsightsScreenState extends State<InsightsScreen> {
     );
   }
 
+  Widget _buildPredictionRow(String title, String value, Color color, IconData icon) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.grey[50],
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.12),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(icon, size: 18, color: color),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              title,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: Colors.black87,
+              ),
+            ),
+          ),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+              color: color,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatCard(String title, String value, IconData icon, Color color) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(icon, color: color, size: 20),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey[600],
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              value,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w800,
+                color: Colors.black87,
+                letterSpacing: -0.5,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFilterChip(String label, IconData icon) {
+    final isSelected = _selectedFilter == label;
+    return FilterChip(
+      label: Text(label),
+      selected: isSelected,
+      onSelected: (selected) {
+        setState(() {
+          _selectedFilter = selected ? label : 'Semua';
+        });
+      },
+      avatar: Icon(icon, size: 16),
+      backgroundColor: Colors.white,
+      selectedColor: AppConstants.primaryColor,
+      labelStyle: TextStyle(
+        color: isSelected ? Colors.white : Colors.grey[700],
+        fontWeight: FontWeight.w600,
+        fontSize: 12,
+      ),
+      checkmarkColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+        side: BorderSide(
+          color: isSelected ? Color(0xFF007AFF) : Colors.grey[300]!,
+          width: 1,
+        ),
+      ),
+    );
+  }
+
   Color _getPriorityColor(String priority) {
     switch (priority) {
       case 'Kritis':
-        return Colors.red;
+        return Color(0xFFFF3B30);
       case 'Tinggi':
-        return Colors.orange;
+        return Color(0xFFFF9500);
       case 'Sedang':
-        return Colors.blue;
+        return Color(0xFF007AFF);
+      case 'Rendah':
+        return Color(0xFF34C759);
       default:
-        return Colors.grey;
+        return Color(0xFF8E8E93);
     }
   }
 
@@ -298,8 +805,19 @@ class _InsightsScreenState extends State<InsightsScreen> {
     // Simulasi refresh data
     setState(() {});
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('AI sedang menganalisis data terbaru...'),
+      SnackBar(
+        content: Row(
+          children: [
+            Icon(Icons.refresh_rounded, color: Colors.white),
+            const SizedBox(width: 8),
+            Text('AI sedang menganalisis data terbaru...'),
+          ],
+        ),
+        backgroundColor: Color(0xFF007AFF),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
       ),
     );
   }
