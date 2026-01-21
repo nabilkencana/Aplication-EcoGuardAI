@@ -29,7 +29,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   String greetingMessage = "Selamat Pagi";
 
   // State untuk data utama
-  double ecoScore = 78.0;
+  double ecoScore = 80.0;
   int activeAlerts = 3;
   double monthlySavings = 1850000;
 
