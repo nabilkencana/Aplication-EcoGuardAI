@@ -79,7 +79,7 @@ class _NavbarState extends State<Navbar> {
           selectedLabelStyle: const TextStyle(
             fontWeight: FontWeight.w700,
             letterSpacing: 0.3,
-            height: 1.4, // Atur height agar tidak terlalu dekat dengan icon
+            height: 1.6, // Atur height agar tidak terlalu dekat dengan icon
           ),
           unselectedLabelStyle: TextStyle(
             fontWeight: FontWeight.w500,

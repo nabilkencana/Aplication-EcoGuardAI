@@ -29,7 +29,7 @@ class ConsumptionCard extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center, // Changed to center
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // Header dengan icon dan title
               Row(
@@ -59,7 +59,7 @@ class ConsumptionCard extends StatelessWidget {
                 ],
               ),
 
-              const SizedBox(height: 12), // Reduced spacing
+              const SizedBox(height: 12),
               // Nilai konsumsi dengan flexible layout
               Flexible(
                 child: FittedBox(
@@ -71,7 +71,7 @@ class ConsumptionCard extends StatelessWidget {
                       Text(
                         _formatValue(value),
                         style: const TextStyle(
-                          fontSize: 28, // Base size
+                          fontSize: 28,
                           fontWeight: FontWeight.w800,
                           color: Colors.black87,
                           letterSpacing: -0.5,
@@ -81,7 +81,7 @@ class ConsumptionCard extends StatelessWidget {
                       Text(
                         _getUnit(value),
                         style: TextStyle(
-                          fontSize: 16, // Smaller unit
+                          fontSize: 16,
                           fontWeight: FontWeight.w600,
                           color: Colors.grey[700],
                         ),
@@ -91,43 +91,16 @@ class ConsumptionCard extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 4), // Reduced spacing
+              const SizedBox(height: 4),
               // Subtitle
               Text(
                 subtitle,
                 style: TextStyle(fontSize: 12, color: Colors.grey[600]),
               ),
 
-              const SizedBox(height: 8), // Reduced spacing
-              // Persentase perubahan
-              Container(
-                constraints: BoxConstraints(maxWidth: double.infinity),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      percentage >= 0
-                          ? Icons.arrow_upward_rounded
-                          : Icons.arrow_downward_rounded,
-                      color: percentage >= 0 ? Colors.red : Colors.green,
-                      size: 14, // Smaller icon
-                    ),
-                    const SizedBox(width: 4),
-                    Flexible(
-                      child: Text(
-                        '${percentage.abs().toStringAsFixed(1)}% ${percentage >= 0 ? 'naik' : 'turun'} dari kemarin',
-                        style: TextStyle(
-                          color: percentage >= 0 ? Colors.red : Colors.green,
-                          fontSize: 11, // Smaller font
-                          fontWeight: FontWeight.w600,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              const SizedBox(height: 8),
+              // Persentase perubahan - dengan layout yang bisa wrap
+              _buildPercentageChange(),
             ],
           ),
         ),
@@ -135,9 +108,85 @@ class ConsumptionCard extends StatelessWidget {
     );
   }
 
+  Widget _buildPercentageChange() {
+    final isPositive = percentage >= 0;
+    final percentText = '${percentage.abs().toStringAsFixed(1)}%';
+    final directionText = isPositive ? 'naik' : 'turun';
+    final fullText = '$percentText $directionText dari kemarin';
+    
+    // Cek apakah teks panjang (lebih dari 20 karakter untuk font size 11)
+    final bool isLongText = fullText.length > 20;
+
+    if (isLongText) {
+      // Layout untuk teks panjang - icon di atas, teks di bawah
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                isPositive
+                    ? Icons.arrow_upward_rounded
+                    : Icons.arrow_downward_rounded,
+                color: isPositive ? Colors.red : Colors.green,
+                size: 14,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                percentText,
+                style: TextStyle(
+                  color: isPositive ? Colors.red : Colors.green,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 2),
+          Text(
+            '$directionText dari kemarin',
+            style: TextStyle(
+              color: isPositive ? Colors.red : Colors.green,
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      );
+    } else {
+      // Layout untuk teks pendek - semuanya dalam satu baris
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            isPositive
+                ? Icons.arrow_upward_rounded
+                : Icons.arrow_downward_rounded,
+            color: isPositive ? Colors.red : Colors.green,
+            size: 14,
+          ),
+          const SizedBox(width: 4),
+          Flexible(
+            child: Text(
+              fullText,
+              style: TextStyle(
+                color: isPositive ? Colors.red : Colors.green,
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+              ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+          ),
+        ],
+      );
+    }
+  }
+
   // Helper method to format value
   String _formatValue(String value) {
-    // Extract numeric part
     final RegExp regex = RegExp(r'([\d.,]+)');
     final match = regex.firstMatch(value);
     if (match != null) {
@@ -148,7 +197,6 @@ class ConsumptionCard extends StatelessWidget {
 
   // Helper method to get unit
   String _getUnit(String value) {
-    // Extract unit part (everything after numbers)
     final RegExp regex = RegExp(r'[\d.,]+\s*(.*)');
     final match = regex.firstMatch(value);
     if (match != null && match.groupCount >= 1) {
