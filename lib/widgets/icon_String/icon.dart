@@ -17,8 +17,8 @@ final List <IconData> lightIcon = [
  ];
  final List <String> navbel = [
    "Home",
-   "Home",
-   "Home",
-   "Home",
-   "Home",
+   "Insights",
+   "Alerts",
+   "Monitoring",
+   "Profile",
  ];

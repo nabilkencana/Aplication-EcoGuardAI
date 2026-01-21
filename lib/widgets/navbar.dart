@@ -1,3 +1,4 @@
+import 'package:ecoguard_ai/screens/profile.dart';
 import 'package:flutter/material.dart';
 
 import '../models/alert.dart';
@@ -53,16 +54,9 @@ class _NavbarState extends State<Navbar> {
           ),
           activeIcon: Icon(boldIcon[index], color: Colors.green[800]),
           label: navbel[index],
+          
         );
       }),
     );
-  }
-}
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
   }
 }

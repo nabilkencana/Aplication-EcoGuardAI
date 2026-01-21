@@ -480,7 +480,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     crossAxisCount: 2,
     crossAxisSpacing: 12,
     mainAxisSpacing: 12,
-    childAspectRatio: 1.15, // Ubah dari 1.2 menjadi 1.15
+    childAspectRatio: 0.9, // Ubah dari 1.2 menjadi 1.15
     children: [
       ConsumptionCard(
         title: '⚡ Listrik',

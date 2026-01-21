@@ -63,7 +63,7 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            'AI Insights',
+                            'Monitoring Energy',
                             style: TextStyle(
                               fontSize: isExpanded ? 28 : 22,
                               fontWeight: FontWeight.w800,
@@ -74,7 +74,7 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
                           if (isExpanded) ...[
                             const SizedBox(height: 8),
                             Text(
-                              'Analisis cerdas untuk efisiensi optimal',
+                              'Pantau konsumsi energi secara real-time',
                               style: TextStyle(
                                 fontSize: 14,
                                 color: Colors.white.withOpacity(0.9),
@@ -90,7 +90,7 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
             ),
             actions: [
               IconButton(
-                icon: Icon(Icons.refresh_rounded, color: Colors.white),
+                icon: const Icon(Icons.refresh_rounded, color: Colors.white),
                 onPressed: _refreshData,
               ),
             ],
@@ -139,7 +139,7 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
                         label: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(range['icon'] as IconData, size: 16, ),
+                            Icon(range['icon'] as IconData, size: 16),
                             const SizedBox(width: 6),
                             Text(range['label']),
                           ],
@@ -148,7 +148,7 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
                         onSelected: (selected) {
                           setState(() => _selectedTimeRange = range['label']);
                         },
-                        selectedColor:  Colors.green[600],
+                        selectedColor: Colors.green[600],
                         backgroundColor: Colors.grey[50],
                         labelStyle: TextStyle(
                           fontSize: 13,
@@ -177,7 +177,7 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
                 crossAxisCount: 2,
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
-                childAspectRatio: 1.4,
+                childAspectRatio: 1.2,
                 children: [
                   _buildStatCard(
                     '⚡ Listrik Hari Ini',
@@ -633,7 +633,7 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
                             0: FlexColumnWidth(2.5),
                             1: FlexColumnWidth(1.5),
                             2: FlexColumnWidth(1.5),
-                            3: FlexColumnWidth(1.5),
+                            3: FlexColumnWidth(1.0), // Lebarkan kolom status untuk icon
                           },
                           children: [
                             TableRow(
@@ -644,7 +644,7 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
                                 _buildTableHeader('Parameter'),
                                 _buildTableHeader('Anda'),
                                 _buildTableHeader('Standar'),
-                                _buildTableHeader('Status'),
+                                _buildTableHeader(''), // Kosongkan header status
                               ],
                             ),
                             _buildTableRow(
@@ -658,7 +658,6 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
                               'Air/kapita',
                               '120 L',
                               '159 L',
-                              
                               const Color(0xFF32D74B),
                               Icons.star_rounded,
                             ),
@@ -666,7 +665,6 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
                               'Emisi CO₂',
                               '45 kg',
                               '60 kg',
-                              
                               const Color(0xFF34C759),
                               Icons.check_circle_rounded,
                             ),
@@ -674,7 +672,6 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
                               'Puncak Listrik',
                               '410 kW',
                               '350 kW',
-                              
                               const Color(0xFFFF9500),
                               Icons.warning_rounded,
                             ),
@@ -878,29 +875,17 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
         Padding(
           padding: const EdgeInsets.all(16),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            padding: const EdgeInsets.all(10), // Padding untuk center icon
             decoration: BoxDecoration(
               color: statusColor.withOpacity(0.12),
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(12),
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(statusIcon, size: 14, color: statusColor),
-                const SizedBox(width: 6),
-                Text(
-                  statusIcon == Icons.check_circle_rounded
-                      ? 'Baik'
-                      : statusIcon == Icons.warning_rounded
-                          ? 'Perhatian'
-                          : 'Unggul',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: statusColor,
-                  ),
-                ),
-              ],
+            child: Center(
+              child: Icon(
+                statusIcon,
+                size: 20, // Ukuran icon sedikit lebih besar
+                color: statusColor,
+              ),
             ),
           ),
         ),

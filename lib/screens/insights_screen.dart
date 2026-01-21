@@ -238,7 +238,7 @@ class _InsightsScreenState extends State<InsightsScreen> {
                 crossAxisCount: 2,
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
-                childAspectRatio: 1.4,
+                childAspectRatio: 1.3,
                 children: [
                   _buildStatCard(
                     'Total Insights',
