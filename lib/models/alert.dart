@@ -12,7 +12,8 @@ class _AlertsScreenState extends State<AlertsScreen> {
   final List<Map<String, dynamic>> _alerts = [
     {
       'title': '🚨 Puncak Listrik Tertinggi',
-      'message': 'Konsumsi listrik mencapai 410 kW pada pukul 16:30, melebihi batas normal sebesar 27%',
+      'message':
+          'Konsumsi listrik mencapai 410 kW pada pukul 16:30, melebihi batas normal sebesar 27%',
       'time': '2 jam yang lalu',
       'type': 'critical',
       'category': 'listrik',
@@ -22,7 +23,8 @@ class _AlertsScreenState extends State<AlertsScreen> {
     },
     {
       'title': '💧 Kebocoran Air Terdeteksi',
-      'message': 'Pola penggunaan air abnormal terdeteksi pukul 03:00. Diduga terjadi kebocoran pada pipa utama',
+      'message':
+          'Pola penggunaan air abnormal terdeteksi pukul 03:00. Diduga terjadi kebocoran pada pipa utama',
       'time': '5 jam yang lalu',
       'type': 'critical',
       'category': 'air',
@@ -32,7 +34,8 @@ class _AlertsScreenState extends State<AlertsScreen> {
     },
     {
       'title': '⚠️ AC Beroperasi Berlebihan',
-      'message': 'Unit AC bekerja 30% di atas kapasitas normal. Suhu ruangan tidak stabil',
+      'message':
+          'Unit AC bekerja 30% di atas kapasitas normal. Suhu ruangan tidak stabil',
       'time': '1 hari yang lalu',
       'type': 'warning',
       'category': 'suhu',
@@ -42,7 +45,8 @@ class _AlertsScreenState extends State<AlertsScreen> {
     },
     {
       'title': '✅ Emisi Menurun',
-      'message': 'Emisi CO₂ turun 8% dibandingkan minggu lalu. Performa sangat baik',
+      'message':
+          'Emisi CO₂ turun 8% dibandingkan minggu lalu. Performa sangat baik',
       'time': '2 hari yang lalu',
       'type': 'success',
       'category': 'lingkungan',
@@ -52,7 +56,8 @@ class _AlertsScreenState extends State<AlertsScreen> {
     },
     {
       'title': '🔋 Baterai Panel Surya Rendah',
-      'message': 'Kapasitas baterai panel surya hanya tersisa 15%. Segera isi ulang',
+      'message':
+          'Kapasitas baterai panel surya hanya tersisa 15%. Segera isi ulang',
       'time': '3 hari yang lalu',
       'type': 'warning',
       'category': 'energi',
@@ -177,7 +182,11 @@ class _AlertsScreenState extends State<AlertsScreen> {
                 children: [
                   const Row(
                     children: [
-                      Icon(Icons.notifications_active_rounded, color: Color(0xFFFF3B30), size: 24),
+                      Icon(
+                        Icons.notifications_active_rounded,
+                        color: Color(0xFFFF3B30),
+                        size: 24,
+                      ),
                       SizedBox(width: 8),
                       Text(
                         'Ringkasan Alert',
@@ -228,15 +237,35 @@ class _AlertsScreenState extends State<AlertsScreen> {
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: [
-                  _buildFilterChip('semua', Icons.all_inclusive_rounded, '${_alerts.length}'),
+                  _buildFilterChip(
+                    'semua',
+                    Icons.all_inclusive_rounded,
+                    '${_alerts.length}',
+                  ),
                   const SizedBox(width: 8),
-                  _buildFilterChip('critical', Icons.error_rounded, '${_alerts.where((a) => a['type'] == 'critical').length}'),
+                  _buildFilterChip(
+                    'critical',
+                    Icons.error_rounded,
+                    '${_alerts.where((a) => a['type'] == 'critical').length}',
+                  ),
                   const SizedBox(width: 8),
-                  _buildFilterChip('warning', Icons.warning_rounded, '${_alerts.where((a) => a['type'] == 'warning').length}'),
+                  _buildFilterChip(
+                    'warning',
+                    Icons.warning_rounded,
+                    '${_alerts.where((a) => a['type'] == 'warning').length}',
+                  ),
                   const SizedBox(width: 8),
-                  _buildFilterChip('success', Icons.check_circle_rounded, '${_alerts.where((a) => a['type'] == 'success').length}'),
+                  _buildFilterChip(
+                    'success',
+                    Icons.check_circle_rounded,
+                    '${_alerts.where((a) => a['type'] == 'success').length}',
+                  ),
                   const SizedBox(width: 8),
-                  _buildFilterChip('info', Icons.info_rounded, '${_alerts.where((a) => a['type'] == 'info').length}'),
+                  _buildFilterChip(
+                    'info',
+                    Icons.info_rounded,
+                    '${_alerts.where((a) => a['type'] == 'info').length}',
+                  ),
                 ],
               ),
             ),
@@ -260,10 +289,7 @@ class _AlertsScreenState extends State<AlertsScreen> {
                   const Spacer(),
                   Text(
                     '${filteredAlerts.length} ditemukan',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.grey[600],
-                    ),
+                    style: TextStyle(fontSize: 13, color: Colors.grey[600]),
                   ),
                 ],
               ),
@@ -309,10 +335,7 @@ class _AlertsScreenState extends State<AlertsScreen> {
                           ? 'Semua alert telah ditangani'
                           : 'Tidak ada alert dengan filter ini',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey[500],
-                      ),
+                      style: TextStyle(fontSize: 14, color: Colors.grey[500]),
                     ),
                   ],
                 ),
@@ -320,13 +343,10 @@ class _AlertsScreenState extends State<AlertsScreen> {
             )
           else
             SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  final alert = filteredAlerts[index];
-                  return _buildAlertCard(alert);
-                },
-                childCount: filteredAlerts.length,
-              ),
+              delegate: SliverChildBuilderDelegate((context, index) {
+                final alert = filteredAlerts[index];
+                return _buildAlertCard(alert);
+              }, childCount: filteredAlerts.length),
             ),
         ],
       ),
@@ -335,11 +355,12 @@ class _AlertsScreenState extends State<AlertsScreen> {
         backgroundColor: Colors.green[600],
         foregroundColor: Colors.white,
         elevation: 4,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         icon: const Icon(Icons.add_alert_rounded, size: 24),
-        label: const Text('Test Alert', style: TextStyle(fontWeight: FontWeight.w600)),
+        label: const Text(
+          'Test Alert',
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
       ),
     );
   }
@@ -404,7 +425,11 @@ class _AlertsScreenState extends State<AlertsScreen> {
                       const SizedBox(height: 2),
                       Row(
                         children: [
-                          Icon(Icons.access_time_rounded, size: 12, color: Colors.grey[500]),
+                          Icon(
+                            Icons.access_time_rounded,
+                            size: 12,
+                            color: Colors.grey[500],
+                          ),
                           const SizedBox(width: 4),
                           Text(
                             time,
@@ -419,7 +444,10 @@ class _AlertsScreenState extends State<AlertsScreen> {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
                     color: resolved
                         ? const Color(0xFF34C759).withOpacity(0.12)
@@ -430,9 +458,13 @@ class _AlertsScreenState extends State<AlertsScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
-                        resolved ? Icons.check_circle_rounded : Icons.priority_high_rounded,
+                        resolved
+                            ? Icons.check_circle_rounded
+                            : Icons.priority_high_rounded,
                         size: 12,
-                        color: resolved ? const Color(0xFF34C759) : const Color(0xFFFF3B30),
+                        color: resolved
+                            ? const Color(0xFF34C759)
+                            : const Color(0xFFFF3B30),
                       ),
                       const SizedBox(width: 4),
                       Text(
@@ -440,7 +472,9 @@ class _AlertsScreenState extends State<AlertsScreen> {
                         style: TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w700,
-                          color: resolved ? const Color(0xFF34C759) : const Color(0xFFFF3B30),
+                          color: resolved
+                              ? const Color(0xFF34C759)
+                              : const Color(0xFFFF3B30),
                         ),
                       ),
                     ],
@@ -456,10 +490,7 @@ class _AlertsScreenState extends State<AlertsScreen> {
               children: [
                 Text(
                   'Tingkat Keparahan: ',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[600],
-                  ),
+                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                 ),
                 const SizedBox(width: 8),
                 Expanded(
@@ -540,7 +571,10 @@ class _AlertsScreenState extends State<AlertsScreen> {
                         ),
                         side: BorderSide(color: Colors.grey[300]!),
                       ),
-                      icon: const Icon(Icons.check_circle_outline_rounded, size: 18),
+                      icon: const Icon(
+                        Icons.check_circle_outline_rounded,
+                        size: 18,
+                      ),
                       label: const Text(
                         'Tandai Selesai',
                         style: TextStyle(
@@ -619,7 +653,7 @@ class _AlertsScreenState extends State<AlertsScreen> {
   Widget _buildFilterChip(String type, IconData icon, String count) {
     final isSelected = _selectedFilter == type;
     final color = _getAlertColor(type);
-    
+
     return FilterChip(
       label: Row(
         mainAxisSize: MainAxisSize.min,
@@ -724,7 +758,9 @@ class _AlertsScreenState extends State<AlertsScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-              ...['semua', 'critical', 'warning', 'success', 'info'].map((type) {
+              ...['semua', 'critical', 'warning', 'success', 'info'].map((
+                type,
+              ) {
                 return ListTile(
                   contentPadding: EdgeInsets.zero,
                   leading: Container(
@@ -750,13 +786,13 @@ class _AlertsScreenState extends State<AlertsScreen> {
                   ),
                   subtitle: Text(
                     '${_alerts.where((a) => type == 'semua' || a['type'] == type).length} alert',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[600],
-                    ),
+                    style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                   ),
                   trailing: _selectedFilter == type
-                      ? Icon(Icons.check_circle_rounded, color: _getAlertColor(type))
+                      ? Icon(
+                          Icons.check_circle_rounded,
+                          color: _getAlertColor(type),
+                        )
                       : null,
                   onTap: () {
                     setState(() {
@@ -815,7 +851,7 @@ class _AlertsScreenState extends State<AlertsScreen> {
       alert['resolved'] = true;
       _unreadCount = _alerts.where((a) => !a['resolved']).length;
     });
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: const Row(
@@ -827,163 +863,202 @@ class _AlertsScreenState extends State<AlertsScreen> {
         ),
         backgroundColor: const Color(0xFF34C759),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }
 
   void _showAlertActions(Map<String, dynamic> alert) {
     final bool resolved = alert['resolved'] as bool? ?? false;
-    
+
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true, // Tambahkan ini
       backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(24),
-            topRight: Radius.circular(24),
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.6, // Muncul di 60% dari atas
+        minChildSize: 0.4, // Minimum 40% dari layar
+        maxChildSize: 0.9, // Maximum 90% dari layar
+        builder: (context, scrollController) {
+          return Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(24),
+                topRight: Radius.circular(24),
               ),
-              const SizedBox(height: 16),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Text(
-                  alert['title']?.toString() ?? 'Alert',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.black87,
+            ),
+            child: Column(
+              children: [
+                // Handle drag di atas
+                Container(
+                  padding: const EdgeInsets.only(top: 8, bottom: 8),
+                  child: Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
                   ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
                 ),
-              ),
-              const SizedBox(height: 24),
-              ...[
-                if (!resolved) ...[
-                  _buildActionTile(
-                    Icons.check_circle_rounded,
-                    'Tandai Selesai',
-                    const Color(0xFF34C759),
-                    () {
-                      Navigator.pop(context);
-                      _resolveAlert(alert);
-                    },
+
+                // Konten utama dengan scroll
+                Expanded(
+                  child: SingleChildScrollView(
+                    controller: scrollController,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Judul alert
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Text(
+                              alert['title']?.toString() ?? 'Alert',
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.black87,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+
+                          // Daftar aksi
+                          ...[
+                            if (!resolved) ...[
+                              _buildActionTile(
+                                Icons.check_circle_rounded,
+                                'Tandai Selesai',
+                                const Color(0xFF34C759),
+                                () {
+                                  Navigator.pop(context);
+                                  _resolveAlert(alert);
+                                },
+                              ),
+                              _buildActionTile(
+                                Icons.notifications_off_rounded,
+                                'Matikan Notifikasi Serupa',
+                                const Color(0xFF8E8E93),
+                                () {
+                                  Navigator.pop(context);
+                                  _muteSimilarAlerts();
+                                },
+                              ),
+                              _buildActionTile(
+                                Icons.schedule_rounded,
+                                'Tunda 1 Jam',
+                                const Color(0xFFFF9500),
+                                () {
+                                  Navigator.pop(context);
+                                  _delayAlert(alert);
+                                },
+                              ),
+                            ],
+                            _buildActionTile(
+                              Icons.delete_outline_rounded,
+                              'Hapus Alert',
+                              const Color(0xFFFF3B30),
+                              () {
+                                Navigator.pop(context);
+                                _deleteAlert(alert);
+                              },
+                            ),
+                            _buildActionTile(
+                              Icons.share_rounded,
+                              'Bagikan Alert',
+                              const Color(0xFF007AFF),
+                              () {
+                                Navigator.pop(context);
+                                _shareAlert(alert);
+                              },
+                            ),
+                            _buildActionTile(
+                              Icons.info_outline_rounded,
+                              'Detail Lengkap',
+                              const Color(0xFF5856D6),
+                              () {
+                                Navigator.pop(context);
+                                _showAlertDetails(alert);
+                              },
+                            ),
+                          ],
+
+                          const SizedBox(height: 20),
+
+                          // Tombol tutup
+                          SizedBox(
+                            width: double.infinity,
+                            child: OutlinedButton(
+                              onPressed: () => Navigator.pop(context),
+                              style: OutlinedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 14,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                                side: BorderSide(color: Colors.grey[300]!),
+                              ),
+                              child: const Text(
+                                'Tutup',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                        ],
+                      ),
+                    ),
                   ),
-                  _buildActionTile(
-                    Icons.notifications_off_rounded,
-                    'Matikan Notifikasi Serupa',
-                    const Color(0xFF8E8E93),
-                    () {
-                      Navigator.pop(context);
-                      _muteSimilarAlerts();
-                    },
-                  ),
-                  _buildActionTile(
-                    Icons.schedule_rounded,
-                    'Tunda 1 Jam',
-                    const Color(0xFFFF9500),
-                    () {
-                      Navigator.pop(context);
-                      _delayAlert(alert);
-                    },
-                  ),
-                ],
-                _buildActionTile(
-                  Icons.delete_outline_rounded,
-                  'Hapus Alert',
-                  const Color(0xFFFF3B30),
-                  () {
-                    Navigator.pop(context);
-                    _deleteAlert(alert);
-                  },
-                ),
-                _buildActionTile(
-                  Icons.share_rounded,
-                  'Bagikan Alert',
-                  const Color(0xFF007AFF),
-                  () {
-                    Navigator.pop(context);
-                    _shareAlert(alert);
-                  },
-                ),
-                _buildActionTile(
-                  Icons.info_outline_rounded,
-                  'Detail Lengkap',
-                  const Color(0xFF5856D6),
-                  () {
-                    Navigator.pop(context);
-                    _showAlertDetails(alert);
-                  },
                 ),
               ],
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton(
-                  onPressed: () => Navigator.pop(context),
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    side: BorderSide(color: Colors.grey[300]!),
-                  ),
-                  child: const Text(
-                    'Tutup',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
 
-  Widget _buildActionTile(IconData icon, String title, Color color, VoidCallback onTap) {
+  Widget _buildActionTile(
+    IconData icon,
+    String title,
+    Color color,
+    VoidCallback onTap,
+  ) {
     return ListTile(
-      contentPadding: EdgeInsets.zero,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       leading: Container(
         width: 40,
         height: 40,
         decoration: BoxDecoration(
-          color: color.withOpacity(0.12),
+          color: color.withOpacity(0.1),
           borderRadius: BorderRadius.circular(10),
         ),
-        child: Icon(icon, color: color, size: 20),
+        child: Icon(icon, color: color, size: 22),
       ),
       title: Text(
         title,
         style: const TextStyle(
-          fontSize: 14,
+          fontSize: 15,
           fontWeight: FontWeight.w600,
           color: Colors.black87,
         ),
+      ),
+      trailing: const Icon(
+        Icons.chevron_right_rounded,
+        color: Colors.grey,
+        size: 20,
       ),
       onTap: onTap,
     );
@@ -992,7 +1067,8 @@ class _AlertsScreenState extends State<AlertsScreen> {
   void _testAlert() {
     final newAlert = {
       'title': '🧪 Alert Uji Coba',
-      'message': 'Ini adalah alert uji coba dari sistem EcoGuard AI untuk memastikan notifikasi berjalan dengan baik',
+      'message':
+          'Ini adalah alert uji coba dari sistem EcoGuard AI untuk memastikan notifikasi berjalan dengan baik',
       'time': 'Baru saja',
       'type': 'warning',
       'category': 'sistem',
@@ -1017,9 +1093,7 @@ class _AlertsScreenState extends State<AlertsScreen> {
         ),
         backgroundColor: const Color(0xFF34C759),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }
@@ -1037,7 +1111,7 @@ class _AlertsScreenState extends State<AlertsScreen> {
     setState(() {
       alert['time'] = 'Ditunda • 1 jam lagi';
     });
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: const Row(
@@ -1049,9 +1123,7 @@ class _AlertsScreenState extends State<AlertsScreen> {
         ),
         backgroundColor: const Color(0xFFFF9500),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }
@@ -1061,7 +1133,9 @@ class _AlertsScreenState extends State<AlertsScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Hapus Alert?'),
-        content: const Text('Alert yang sudah dihapus tidak dapat dikembalikan.'),
+        content: const Text(
+          'Alert yang sudah dihapus tidak dapat dikembalikan.',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -1112,17 +1186,11 @@ class _AlertsScreenState extends State<AlertsScreen> {
             const SizedBox(height: 16),
             Text(
               'Kategori: ${alert['category']?.toString().toUpperCase() ?? 'UNKNOWN'}',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey[600],
-              ),
+              style: TextStyle(fontSize: 12, color: Colors.grey[600]),
             ),
             Text(
               'Status: ${alert['resolved'] == true ? 'SELESAI' : 'AKTIF'}',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey[600],
-              ),
+              style: TextStyle(fontSize: 12, color: Colors.grey[600]),
             ),
           ],
         ),

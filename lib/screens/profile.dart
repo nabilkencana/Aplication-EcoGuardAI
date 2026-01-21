@@ -93,7 +93,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           // Modern AppBar with Profile Header
           SliverAppBar(
             automaticallyImplyLeading: false,
-            expandedHeight: 320,
+            expandedHeight: 330,
             floating: false,
             pinned: true,
             backgroundColor: Colors.transparent,

@@ -126,7 +126,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                         borderRadius: BorderRadius.circular(14),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: Colors.black.withOpacity(0.1),
+                                            color: Colors.black.withOpacity(
+                                              0.1,
+                                            ),
                                             blurRadius: 8,
                                             offset: const Offset(0, 2),
                                           ),
@@ -161,7 +163,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                             'Satpam Lingkungan Digital',
                                             style: TextStyle(
                                               fontSize: 12,
-                                              color: Colors.white.withOpacity(0.85),
+                                              color: Colors.white.withOpacity(
+                                                0.85,
+                                              ),
                                               height: 1.1,
                                             ),
                                             maxLines: 1,
@@ -278,7 +282,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   const SizedBox(height: 24),
 
                   // AI Recommendations
-                  _buildSectionHeader('🤖 Rekomendasi AI', onTap: _goToInsights),
+                  _buildSectionHeader(
+                    '🤖 Rekomendasi AI',
+                    onTap: _goToInsights,
+                  ),
                   const SizedBox(height: 12),
                   _buildRecommendationSection(),
                   const SizedBox(height: 24),
@@ -294,7 +301,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   const SizedBox(height: 24),
 
                   // Recent Activity
-                  _buildSectionHeader('📊 Aktivitas Terkini', onTap: _goToMonitoring),
+                  _buildSectionHeader(
+                    '📊 Aktivitas Terkini',
+                    onTap: _goToMonitoring,
+                  ),
                   const SizedBox(height: 12),
                   _buildRecentActivity(),
                   const SizedBox(height: 40),
@@ -451,11 +461,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 height: 40,
                 color: Colors.white.withOpacity(0.2),
               ),
-              _buildStatItem(
-                Icons.co2_rounded,
-                'CO₂ Berkurang',
-                '150 kg',
-              ),
+              _buildStatItem(Icons.co2_rounded, 'CO₂ Berkurang', '150 kg'),
               Container(
                 width: 1,
                 height: 40,
@@ -474,48 +480,57 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildStatsGrid() {
-  return GridView.count(
-    shrinkWrap: true,
-    physics: const NeverScrollableScrollPhysics(),
-    crossAxisCount: 2,
-    crossAxisSpacing: 12,
-    mainAxisSpacing: 12,
-    childAspectRatio: 0.9, // Ubah dari 1.2 menjadi 1.15
-    children: [
-      ConsumptionCard(
-        title: '⚡ Listrik',
-        value: '${energyData.currentConsumption.toStringAsFixed(0)} kWh',
-        percentage: energyData.dailyChange,
-        icon: Icons.bolt_rounded,
-        color: AppConstants.energyColor,
-        subtitle: 'Hari ini',
-      ),
-      ConsumptionCard(
-        title: '💧 Air',
-        value: '${waterData.currentConsumption.toStringAsFixed(0)} L',
-        percentage: waterData.dailyChange,
-        icon: Icons.water_drop_rounded,
-        color: AppConstants.waterColor,
-        subtitle: 'Hari ini',
-      ),
-      _buildStatMiniCard(
-        '🌡️ Suhu Ruangan',
-        '24°C',
-        Icons.thermostat_rounded,
-        const Color(0xFFFF6B6B),
-        'Optimal',
-        showBadge: true,
-      ),
-      _buildStatMiniCard(
-        '💨 Kualitas Udara',
-        'Baik',
-        Icons.air_rounded,
-        const Color(0xFF4CD964),
-        'AQI: 45',
-      ),
-    ],
-  );
-}
+    return GridView.count(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      crossAxisCount: 2,
+      crossAxisSpacing: 12,
+      mainAxisSpacing: 12,
+      childAspectRatio: 0.9, // Sesuaikan rasio aspek
+      children: [
+        ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: 180),
+          child: ConsumptionCard(
+            title: '⚡ Listrik',
+            value: '${energyData.currentConsumption.toStringAsFixed(0)} kWh',
+            percentage: energyData.dailyChange,
+            icon: Icons.bolt_rounded,
+            color: AppConstants.energyColor,
+            subtitle: 'Hari ini',
+          ),
+        ),
+
+        ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: 200),
+          child: ConsumptionCard(
+            title: '💧 Air',
+            value: '${waterData.currentConsumption.toStringAsFixed(0)} m³',
+            percentage: waterData.dailyChange,
+            icon: Icons.water_drop_rounded,
+            color: AppConstants.waterColor,
+            subtitle: 'Hari ini',
+          ),
+        ),
+
+        _buildStatMiniCard(
+          '🌡️ Suhu Ruangan',
+          '24°C',
+          Icons.thermostat_rounded,
+          const Color(0xFFFF6B6B),
+          'Optimal',
+          showBadge: true,
+        ),
+
+        _buildStatMiniCard(
+          '💨 Kualitas Udara',
+          'Baik',
+          Icons.air_rounded,
+          const Color(0xFF4CD964),
+          'AQI: 45',
+        ),
+      ],
+    );
+  }
 
   Widget _buildStatMiniCard(
     String title,
@@ -602,10 +617,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 const SizedBox(height: 2),
                 Text(
                   subtitle,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[600],
-                  ),
+                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                 ),
               ],
             ),
@@ -744,11 +756,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 color: color.withOpacity(0.12),
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: Icon(
-                icon,
-                color: color,
-                size: 26,
-              ),
+              child: Icon(icon, color: color, size: 26),
             ),
             const SizedBox(height: 8),
             Text(
