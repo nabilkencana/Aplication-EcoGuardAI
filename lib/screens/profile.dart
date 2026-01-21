@@ -1,3 +1,4 @@
+import 'package:ecoguard_ai/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -104,8 +105,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      Color(0xFF5856D6),
-                      Color(0xFFAF52DE),
+                      AppConstants.primaryColor,
+                      AppConstants.secondaryColor,
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,

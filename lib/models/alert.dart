@@ -95,69 +95,87 @@ class _AlertsScreenState extends State<AlertsScreen> {
           SliverAppBar(
             automaticallyImplyLeading: false,
             centerTitle: true,
-            expandedHeight: 120,
+            expandedHeight: 85, // Tinggi maksimal saat expanded
             floating: false,
-            pinned: true,
+            pinned: true, // Tetap terlihat saat scroll
             backgroundColor: Colors.transparent,
             elevation: 0,
-            flexibleSpace: LayoutBuilder(
-              builder: (context, constraints) {
-                final top = constraints.biggest.height;
-                final isExpanded = top > 70;
-
-                return Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        AppConstants.primaryColor,
-                        AppConstants.secondaryColor.withOpacity(0.9),
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(isExpanded ? 30 : 0),
-                      bottomRight: Radius.circular(isExpanded ? 30 : 0),
-                    ),
+            flexibleSpace: FlexibleSpaceBar(
+              collapseMode: CollapseMode.pin, // Penting: akan pin saat collapse
+              stretchModes: const [StretchMode.zoomBackground],
+              titlePadding: const EdgeInsets.only(bottom: 16),
+              background: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      AppConstants.primaryColor,
+                      AppConstants.secondaryColor.withOpacity(0.9),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
-                  child: SafeArea(
-                    bottom: false,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Smart Alerts',
-                            style: TextStyle(
-                              fontSize: isExpanded ? 28 : 22,
-                              fontWeight: FontWeight.w800,
-                              color: Colors.white,
-                              letterSpacing: -0.5,
-                            ),
-                          ),
-                          if (isExpanded) ...[
-                            const SizedBox(height: 8),
-                            Text(
-                              'Analisis cerdas untuk efisiensi optimal',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.white.withOpacity(0.9),
-                              ),
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(30),
+                    bottomRight: Radius.circular(30),
+                  ),
+                ),
+              ),
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Widget judul yang akan tetap ada saat collapsed
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Judul utama - akan tetap terlihat
+                      Text(
+                        'Smart Alerts',
+                        style: TextStyle(
+                          fontSize: 18, // Ukuran lebih kecil saat collapsed
+                          fontWeight: FontWeight.w800,
+                          color: Colors.white,
+                          shadows: [
+                            Shadow(
+                              color: Colors.black.withOpacity(0.3),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
                             ),
                           ],
-                        ],
+                        ),
                       ),
-                    ),
+                      
+                      AnimatedOpacity(
+                        duration: const Duration(milliseconds: 200),
+                        opacity: 0, // Akan diatur oleh FlexibleSpaceBar
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Text(
+                            'Analisis cerdas untuk efisiensi optimal',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.white.withOpacity(0.9),
+                              shadows: [
+                                Shadow(
+                                  color: Colors.black.withOpacity(0.2),
+                                  blurRadius: 2,
+                                  offset: const Offset(0, 1),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                );
-              },
+                ],
+              ),
+              // Expanded content - hanya muncul saat fully expanded
+              expandedTitleScale: 1.4,
             ),
             // actions: [
             //   IconButton(
-            //     icon: Icon(Icons.refresh_rounded, color: Colors.white),
-            //     onPressed: ,
+            //     icon: const Icon(Icons.refresh_rounded, color: Colors.white),
+            //     onPressed: _refreshInsights,
             //   ),
             // ],
           ),
