@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:timezone/timezone.dart' as tz;
+import 'package:flutter_local_notifications/flutter_local_notifications.dart' show FlutterLocalNotificationsPlugin, AndroidInitializationSettings, DarwinInitializationSettings, InitializationSettings, AndroidFlutterLocalNotificationsPlugin, IOSFlutterLocalNotificationsPlugin, Importance, Priority, AndroidNotificationDetails, RawResourceAndroidNotificationSound, DarwinNotificationDetails, NotificationDetails, PendingNotificationRequest, NotificationResponse, DrawableResourceAndroidBitmap, BigTextStyleInformation, DateTimeComponents, AndroidScheduleMode;
+import 'package:timezone/timezone.dart' as tz show TZDateTime, local;
 import 'package:timezone/data/latest.dart' as tz;
 
 class NotificationService {
