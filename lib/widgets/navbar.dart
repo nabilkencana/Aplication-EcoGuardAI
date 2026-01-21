@@ -48,10 +48,10 @@ class _NavbarState extends State<Navbar> {
           icon: Icon(
             lightIcon[index],
             color: currentIndex == index
-                ? Colors.deepPurple
+                ? Colors.green[400]
                 : Colors.grey,
           ),
-          activeIcon: Icon(boldIcon[index], color: Colors.deepPurple),
+          activeIcon: Icon(boldIcon[index], color: Colors.green[800]),
           label: navbel[index],
         );
       }),
