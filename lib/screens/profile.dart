@@ -1,4 +1,3 @@
-import 'package:ecoguard_ai/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -94,7 +93,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           // Modern AppBar with Profile Header
           SliverAppBar(
             automaticallyImplyLeading: false,
-            expandedHeight: 330,
+            expandedHeight: 320,
             floating: false,
             pinned: true,
             backgroundColor: Colors.transparent,
@@ -105,8 +104,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      AppConstants.primaryColor,
-                      Color.fromARGB(255, 104, 175, 76),
+                      Color(0xFF5856D6),
+                      Color(0xFFAF52DE),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,

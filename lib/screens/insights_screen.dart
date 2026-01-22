@@ -13,7 +13,7 @@ class _InsightsScreenState extends State<InsightsScreen> {
     {
       'title': '⚡ Puncak Konsumsi Listrik',
       'description':
-          'Konsumsi meningkat 27% di luar jam operasional (19:00-22:00)',
+      'Konsumsi meningkat 27% di luar jam operasional (19:00-22:00)',
       'impact': 'Potensi penghematan: Rp 450.000/bulan',
       'recommendation': 'Jadwalkan perangkat non-esensial di luar jam puncak',
       'priority': 'Tinggi',
@@ -25,7 +25,7 @@ class _InsightsScreenState extends State<InsightsScreen> {
     {
       'title': '💧 Kebocoran Air Terdeteksi',
       'description':
-          'Pola penggunaan air abnormal terdeteksi antara 02:00-04:00',
+      'Pola penggunaan air abnormal terdeteksi antara 02:00-04:00',
       'impact': 'Kerugian air: ~500 L/hari',
       'recommendation': 'Periksa instalasi pipa dan keran',
       'priority': 'Kritis',
@@ -71,86 +71,68 @@ class _InsightsScreenState extends State<InsightsScreen> {
           SliverAppBar(
             automaticallyImplyLeading: false,
             centerTitle: true,
-            expandedHeight: 85, // Tinggi maksimal saat expanded
+            expandedHeight: 120,
             floating: false,
-            pinned: true, // Tetap terlihat saat scroll
+            pinned: true,
             backgroundColor: Colors.transparent,
             elevation: 0,
-            flexibleSpace: FlexibleSpaceBar(
-              collapseMode: CollapseMode.pin, // Penting: akan pin saat collapse
-              stretchModes: const [StretchMode.zoomBackground],
-              titlePadding: const EdgeInsets.only(bottom: 16),
-              background: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      AppConstants.primaryColor,
-                      AppConstants.secondaryColor.withOpacity(0.9),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+            flexibleSpace: LayoutBuilder(
+              builder: (context, constraints) {
+                final top = constraints.biggest.height;
+                final isExpanded = top > 70;
+
+                return Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        AppConstants.primaryColor,
+                        AppConstants.secondaryColor.withOpacity(0.9),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(isExpanded ? 30 : 0),
+                      bottomRight: Radius.circular(isExpanded ? 30 : 0),
+                    ),
                   ),
-                  borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(30),
-                    bottomRight: Radius.circular(30),
-                  ),
-                ),
-              ),
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Widget judul yang akan tetap ada saat collapsed
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // Judul utama - akan tetap terlihat
-                      Text(
-                        'AI Insights',
-                        style: TextStyle(
-                          fontSize: 18, // Ukuran lebih kecil saat collapsed
-                          fontWeight: FontWeight.w800,
-                          color: Colors.white,
-                          shadows: [
-                            Shadow(
-                              color: Colors.black.withOpacity(0.3),
-                              blurRadius: 4,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                      ),
-                      
-                      AnimatedOpacity(
-                        duration: const Duration(milliseconds: 200),
-                        opacity: 0, // Akan diatur oleh FlexibleSpaceBar
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 4),
-                          child: Text(
-                            'Analisis cerdas untuk efisiensi optimal',
+                  child: SafeArea(
+                    bottom: false,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            'AI Insights',
                             style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.white.withOpacity(0.9),
-                              shadows: [
-                                Shadow(
-                                  color: Colors.black.withOpacity(0.2),
-                                  blurRadius: 2,
-                                  offset: const Offset(0, 1),
-                                ),
-                              ],
+                              fontSize: isExpanded ? 28 : 22,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                              letterSpacing: -0.5,
                             ),
                           ),
-                        ),
+                          if (isExpanded) ...[
+                            const SizedBox(height: 8),
+                            Text(
+                              'Analisis cerdas untuk efisiensi optimal',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.white.withOpacity(0.9),
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ],
-              ),
-              // Expanded content - hanya muncul saat fully expanded
-              expandedTitleScale: 1.4,
+                );
+              },
             ),
             actions: [
               IconButton(
-                icon: const Icon(Icons.refresh_rounded, color: Colors.white),
+                icon: Icon(Icons.refresh_rounded, color: Colors.white),
                 onPressed: _refreshInsights,
               ),
             ],
@@ -314,10 +296,13 @@ class _InsightsScreenState extends State<InsightsScreen> {
 
           // Insights List
           SliverList(
-            delegate: SliverChildBuilderDelegate((context, index) {
-              final insight = _aiInsights[index];
-              return _buildInsightCard(insight);
-            }, childCount: _aiInsights.length),
+            delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                final insight = _aiInsights[index];
+                return _buildInsightCard(insight);
+              },
+              childCount: _aiInsights.length,
+            ),
           ),
 
           // Predictive Analysis Section
@@ -433,9 +418,7 @@ class _InsightsScreenState extends State<InsightsScreen> {
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
-                          color: _getPriorityColor(
-                            insight['priority'] as String,
-                          ),
+                          color: _getPriorityColor(insight['priority'] as String),
                         ),
                       ),
                     ],
@@ -690,11 +673,11 @@ class _InsightsScreenState extends State<InsightsScreen> {
   }
 
   Widget _buildPredictionRow(
-    String title,
-    String value,
-    Color color,
-    IconData icon,
-  ) {
+      String title,
+      String value,
+      Color color,
+      IconData icon,
+      ) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -737,11 +720,11 @@ class _InsightsScreenState extends State<InsightsScreen> {
   }
 
   Widget _buildStatCard(
-    String title,
-    String value,
-    IconData icon,
-    Color color,
-  ) {
+      String title,
+      String value,
+      IconData icon,
+      Color color,
+      ) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -866,9 +849,7 @@ class _InsightsScreenState extends State<InsightsScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text('Tandai Selesai'),
-        content: Text(
-          'Apakah Anda yakin ingin menandai "${insight['title']}" sebagai selesai?',
-        ),
+        content: Text('Apakah Anda yakin ingin menandai "${insight['title']}" sebagai selesai?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -896,9 +877,7 @@ class _InsightsScreenState extends State<InsightsScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text('Terapkan Rekomendasi'),
-        content: Text(
-          'Anda akan menerapkan rekomendasi: "${insight['recommendation']}"',
-        ),
+        content: Text('Anda akan menerapkan rekomendasi: "${insight['recommendation']}"'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
