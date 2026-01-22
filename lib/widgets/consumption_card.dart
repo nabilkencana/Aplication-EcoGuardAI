@@ -52,7 +52,7 @@ class ConsumptionCard extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                         color: Colors.black87,
                       ),
-                      overflow: TextOverflow.ellipsis,
+                        overflow: TextOverflow.clip,
                       maxLines: 1,
                     ),
                   ),
